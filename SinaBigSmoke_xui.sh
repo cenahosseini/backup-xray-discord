@@ -18,9 +18,14 @@ if [ -f "$CONFIG_FILE" ] && [ -r "$CONFIG_FILE" ]; then
     # Read input from config file
     read_input_from_config
 else
-    # If config file does not exist or is not readable, show error message
-    echo "Config file does not exist or is not readable."
-    exit 1
+    # If config file does not exist or is not readable, create it
+    touch "$CONFIG_FILE"
+    # Get input from user and save it to config file
+    get_input_and_save "Please enter the Discord webhook URL: "
+    get_input_and_save "Please enter the message: "
+    get_input_and_save "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): "
+    # Read input from config file
+    read_input_from_config
 fi
 
 WEBHOOK_URL="$INPUT"
