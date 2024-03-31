@@ -1,42 +1,38 @@
 #!/bin/bash
 
-CONFIG_FILE="config.txt"
+# Define file paths for configuration
+CONFIG_FILE_WEBHOOK="webhook.txt"
+CONFIG_FILE_MESSAGE="message.txt"
+CONFIG_FILE_CRON="cron.txt"
 
 # Function to get input from user and save it to config file
 get_input_and_save() {
     read -p "$1" INPUT
-    echo "$INPUT" >> "$CONFIG_FILE"
+    echo "$INPUT" > "$2"
 }
 
 # Function to read input from config file
 read_input_from_config() {
-    INPUT=$(sed -n "$1p" "$CONFIG_FILE")
+    INPUT=$(cat "$1")
 }
 
-# Check if config file exists and is readable
-if [ -f "$CONFIG_FILE" ] && [ -r "$CONFIG_FILE" ]; then
-    # Read input from config file
-    read_input_from_config 1
-    WEBHOOK_URL="$INPUT"
-    read_input_from_config 2
-    MESSAGE="$INPUT"
-    read_input_from_config 3
-    CRON_JOB="$INPUT"
-else
-    # If config file does not exist or is not readable, create it
-    touch "$CONFIG_FILE"
-    # Get input from user and save it to config file
-    get_input_and_save "Please enter the Discord webhook URL: "
-    get_input_and_save "Please enter the message: "
-    get_input_and_save "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): "
-    # Read input from config file
-    read_input_from_config 1
-    WEBHOOK_URL="$INPUT"
-    read_input_from_config 2
-    MESSAGE="$INPUT"
-    read_input_from_config 3
-    CRON_JOB="$INPUT"
+# Check if config files exist
+if [ ! -f "$CONFIG_FILE_WEBHOOK" ] || [ ! -f "$CONFIG_FILE_MESSAGE" ] || [ ! -f "$CONFIG_FILE_CRON" ]; then
+    # If config files do not exist, get input from user and save them to config files
+    get_input_and_save "Please enter the Discord webhook URL: " "$CONFIG_FILE_WEBHOOK"
+    get_input_and_save "Please enter the message: " "$CONFIG_FILE_MESSAGE"
+    get_input_and_save "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): " "$CONFIG_FILE_CRON"
 fi
+
+# Read input from config files
+read_input_from_config "$CONFIG_FILE_WEBHOOK"
+WEBHOOK_URL="$INPUT"
+
+read_input_from_config "$CONFIG_FILE_MESSAGE"
+MESSAGE="$INPUT"
+
+read_input_from_config "$CONFIG_FILE_CRON"
+CRON_JOB="$INPUT"
 
 # Install zip package
 sudo apt update
