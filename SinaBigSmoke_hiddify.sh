@@ -1,43 +1,45 @@
 #!/bin/bash
 
-# Define message to be sent along with the file
-MESSAGE=""
+CONFIG_FILE_WEBHOOK="webhook.txt"
+CONFIG_FILE_MESSAGE="message.txt"
+CONFIG_FILE_CRON="cron.txt"
 
-# Get Discord webhook URL from user
-read -p "Please enter the Discord webhook URL: " WEBHOOK_URL
+get_input_and_save() {
+    read -p "$1" INPUT
+    echo "$INPUT" > "$2"
+}
 
-# Get message from user
-read -p "Please enter the message: " MESSAGE
+read_input_from_config() {
+    INPUT=$(cat "$1")
+}
 
-# Get cron job from user
-read -p "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): " CRON_JOB
+if [ ! -f "$CONFIG_FILE_WEBHOOK" ] || [ ! -f "$CONFIG_FILE_MESSAGE" ] || [ ! -f "$CONFIG_FILE_CRON" ]; then
+    get_input_and_save "Please enter the Discord webhook URL: " "$CONFIG_FILE_WEBHOOK"
+    get_input_and_save "Please enter the message: " "$CONFIG_FILE_MESSAGE"
+    get_input_and_save "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): " "$CONFIG_FILE_CRON"
+fi
 
-# Install zip package
+read_input_from_config "$CONFIG_FILE_WEBHOOK"
+WEBHOOK_URL="$INPUT"
+
+read_input_from_config "$CONFIG_FILE_MESSAGE"
+MESSAGE="$INPUT"
+
+read_input_from_config "$CONFIG_FILE_CRON"
+CRON_JOB="$INPUT"
+
 sudo apt update
 sudo apt install zip -y
-
-# Remove existing backup zip file
 sudo rm -rf /root/SinaBigSmoke-h.zip
-
-# Define path to the zip file
 FILE_PATH="/root/SinaBigSmoke-h.zip"
-
-# Display current system time
 echo "Current system time:"
 date
-
-# Display chosen cron job
 echo "Chosen cron job schedule:"
 echo "$CRON_JOB"
-
-# Get and display cron jobs
 echo "Cron jobs:"
 sudo crontab -l
-
-# Add the cron job
 echo "$CRON_JOB /bin/bash /root/SinaBigSmoke_hiddify.sh" | sudo crontab -
 
-# Define message for Hiddify backup
 if hiddify_dir=$(find /opt -type d -iname "hiddify-panel" -print -quit); then
     echo "The Hiddify folder exists at $hiddify_dir"
 else
@@ -45,7 +47,6 @@ else
     exit 1
 fi
 
-# Hiddify Backup
 if find /opt/hiddify-config/hiddify-panel/ -type d -iname "backup" -print -quit; then
     echo "The Hiddify backup folder exists."
 else
@@ -66,8 +67,5 @@ zip /root/SinaBigSmoke-h.zip /opt/hiddify-config/hiddify-panel/backup/\$latest_f
 EOF
 )
 
-# Send the Hiddify backup file using curl
 curl -X POST -H "Content-Type: multipart/form-data" -F "content=$MESSAGE" -F "file=@$FILE_PATH" $WEBHOOK_URL
-
-# Display success message
 echo "Backup hiddify sent successfully to Discord webhook. Coded By SinaBigSmoke <3"
