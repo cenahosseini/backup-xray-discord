@@ -5,18 +5,23 @@ CONFIG_FILE="config.txt"
 # Function to get input from user and save it to config file
 get_input_and_save() {
     read -p "$1" INPUT
-    echo "$INPUT" > "$CONFIG_FILE"
+    echo "$INPUT" >> "$CONFIG_FILE"
 }
 
 # Function to read input from config file
 read_input_from_config() {
-    INPUT=$(cat "$CONFIG_FILE")
+    INPUT=$(sed -n "$1p" "$CONFIG_FILE")
 }
 
 # Check if config file exists and is readable
 if [ -f "$CONFIG_FILE" ] && [ -r "$CONFIG_FILE" ]; then
     # Read input from config file
-    read_input_from_config
+    read_input_from_config 1
+    WEBHOOK_URL="$INPUT"
+    read_input_from_config 2
+    MESSAGE="$INPUT"
+    read_input_from_config 3
+    CRON_JOB="$INPUT"
 else
     # If config file does not exist or is not readable, create it
     touch "$CONFIG_FILE"
@@ -25,18 +30,13 @@ else
     get_input_and_save "Please enter the message: "
     get_input_and_save "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): "
     # Read input from config file
-    read_input_from_config
+    read_input_from_config 1
+    WEBHOOK_URL="$INPUT"
+    read_input_from_config 2
+    MESSAGE="$INPUT"
+    read_input_from_config 3
+    CRON_JOB="$INPUT"
 fi
-
-WEBHOOK_URL="$INPUT"
-
-read_input_from_config
-
-MESSAGE="$INPUT"
-
-read_input_from_config
-
-CRON_JOB="$INPUT"
 
 # Install zip package
 sudo apt update
