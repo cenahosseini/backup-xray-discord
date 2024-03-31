@@ -9,6 +9,9 @@ read -p "Please enter the Discord webhook URL: " WEBHOOK_URL
 # Get message from user
 read -p "Please enter the message: " MESSAGE
 
+# Get cron job from user
+read -p "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): " CRON_JOB
+
 # Install zip package
 sudo apt update
 sudo apt install zip -y
@@ -25,11 +28,23 @@ echo -e "$MESSAGE" | sudo zip -z /root/SinaBigSmoke-x.zip
 # Define path to the zip file
 FILE_PATH="/root/SinaBigSmoke-x.zip"
 
+# Display current system time
+echo "Current system time:"
+date
+
+# Display chosen cron job
+echo "Chosen cron job schedule:"
+echo "$CRON_JOB"
+
+# Get and display cron jobs
+echo "Cron jobs:"
+sudo crontab -l
+
 # Add the cron job
-echo "0 0 * * * /bin/bash /root/backup_script.sh" | sudo crontab -
+echo "$CRON_JOB /bin/bash /root/SinaBigSmoke_backupx.sh" | sudo crontab -
 
 # Send the file using curl
 curl -X POST -H "Content-Type: multipart/form-data" -F "content=$MESSAGE" -F "file=@$FILE_PATH" $WEBHOOK_URL
 
 # Display success message
-echo "Backup file sent successfully to Discord webhook."
+echo "Backup x-ui file sent successfully to Discord webhook. Coded By SinaBigSmoke <3"
