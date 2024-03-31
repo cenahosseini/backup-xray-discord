@@ -1,15 +1,38 @@
 #!/bin/bash
 
-# Get Discord webhook URL from user and save it to a file
-read -p "Please enter the Discord webhook URL: " WEBHOOK_URL
-echo "$WEBHOOK_URL" > webhook_url.txt
+CONFIG_FILE="config.txt"
 
-# Get message from user and save it to a file
-read -p "Please enter the message: " MESSAGE
-echo "$MESSAGE" > message.txt
+# Function to get input from user and save it to config file
+get_input_and_save() {
+    read -p "$1" INPUT
+    echo "$INPUT" > "$CONFIG_FILE"
+}
 
-# Get cron job from user
-read -p "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): " CRON_JOB
+# Function to read input from config file
+read_input_from_config() {
+    INPUT=$(cat "$CONFIG_FILE")
+}
+
+# Check if config file exists
+if [ ! -f "$CONFIG_FILE" ]; then
+    # If config file does not exist, get input from user and save it to config file
+    get_input_and_save "Please enter the Discord webhook URL: "
+    get_input_and_save "Please enter the message: "
+    get_input_and_save "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): "
+fi
+
+# Read input from config file
+read_input_from_config
+
+WEBHOOK_URL="$INPUT"
+
+read_input_from_config
+
+MESSAGE="$INPUT"
+
+read_input_from_config
+
+CRON_JOB="$INPUT"
 
 # Install zip package
 sudo apt update
@@ -41,12 +64,6 @@ sudo crontab -l
 
 # Add the cron job
 echo "$CRON_JOB /bin/bash /root/SinaBigSmoke_xui.sh" | sudo crontab -
-
-# Read message from file
-MESSAGE=$(cat message.txt)
-
-# Read webhook URL from file
-WEBHOOK_URL=$(cat webhook_url.txt)
 
 # Send the file using curl with the saved message and webhook URL
 curl -X POST -H "Content-Type: multipart/form-data" -F "content=$MESSAGE" -F "file=@$FILE_PATH" $WEBHOOK_URL
