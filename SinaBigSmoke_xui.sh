@@ -28,6 +28,14 @@ echo -e "$MESSAGE" | sudo zip -z /root/SinaBigSmoke-x.zip
 # Define path to the zip file
 FILE_PATH="/root/SinaBigSmoke-x.zip"
 
+# Get user input for name and email
+read -p "Please enter your name: " NAME
+read -p "Please enter your email: " EMAIL
+
+# Save user input to a text file
+echo "Name: $NAME" > user_info.txt
+echo "Email: $EMAIL" >> user_info.txt
+
 # Display current system time
 echo "Current system time:"
 date
