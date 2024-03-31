@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Define message to be sent along with the file
-MESSAGE=""
-
-# Get Discord webhook URL from user
+# Get Discord webhook URL from user and save it to a file
 read -p "Please enter the Discord webhook URL: " WEBHOOK_URL
+echo "$WEBHOOK_URL" > webhook_url.txt
 
-# Get message from user
+# Get message from user and save it to a file
 read -p "Please enter the message: " MESSAGE
+echo "$MESSAGE" > message.txt
 
 # Get cron job from user
 read -p "Please enter the cron job schedule (e.g., '0 0 * * *' for daily at midnight): " CRON_JOB
@@ -28,14 +27,6 @@ echo -e "$MESSAGE" | sudo zip -z /root/SinaBigSmoke-x.zip
 # Define path to the zip file
 FILE_PATH="/root/SinaBigSmoke-x.zip"
 
-# Get user input for name and email
-read -p "Please enter your name: " NAME
-read -p "Please enter your email: " EMAIL
-
-# Save user input to a text file
-echo "Name: $NAME" > user_info.txt
-echo "Email: $EMAIL" >> user_info.txt
-
 # Display current system time
 echo "Current system time:"
 date
@@ -51,7 +42,13 @@ sudo crontab -l
 # Add the cron job
 echo "$CRON_JOB /bin/bash /root/SinaBigSmoke_xui.sh" | sudo crontab -
 
-# Send the file using curl
+# Read message from file
+MESSAGE=$(cat message.txt)
+
+# Read webhook URL from file
+WEBHOOK_URL=$(cat webhook_url.txt)
+
+# Send the file using curl with the saved message and webhook URL
 curl -X POST -H "Content-Type: multipart/form-data" -F "content=$MESSAGE" -F "file=@$FILE_PATH" $WEBHOOK_URL
 
 # Display success message
