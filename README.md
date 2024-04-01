@@ -1,18 +1,19 @@
 # Backup-XRay-Discord
 
-## 1 - To install x-ui, run the following command:
+## 1 - Installation :
 
+ - for (x-ui):
 ```bash
 wget https://raw.githubusercontent.com/SinaBigSmoke/backup-xray-discord/main/SinaBigSmoke_xui.sh
 ```
 
-To install marzban, run the following command:
+ - for (marzban):
 
 ```bash
 wget https://raw.githubusercontent.com/SinaBigSmoke/backup-xray-discord/main/SinaBigSmoke_marzban.sh
 ```
 
-To install hiddify, run the following command:
+ - for (hiddify):
 
 ```bash
 wget https://raw.githubusercontent.com/SinaBigSmoke/backup-xray-discord/main/SinaBigSmoke_hiddify.sh
@@ -20,34 +21,34 @@ wget https://raw.githubusercontent.com/SinaBigSmoke/backup-xray-discord/main/Sin
 
 ## 2 - Determine access:
 
-For x-ui:
+ - for x-ui:
 ```bash
 chmod +x SinaBigSmoke_xui.sh
 ```
 
-For marzban:
+ - for marzban:
 ```bash
 chmod +x SinaBigSmoke_marzban.sh
 ```
 
-For hiddify:
+ - for hiddify:
 ```bash
 chmod +x SinaBigSmoke_hiddify.sh
 ```
 
 ## 3- To run:
 
-For x-ui:
+ - for x-ui:
 ```bash
 ./SinaBigSmoke_xui.sh
 ```
 
-For marzban:
+ - for marzban:
 ```bash
 ./SinaBigSmoke_marzban.sh
 ```
 
-For hiddify:
+ - for hiddify:
 ```bash
 ./SinaBigSmoke_hiddify.sh
 ```
